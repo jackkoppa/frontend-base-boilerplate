@@ -22,12 +22,12 @@ PROJECT BACKGROUND
 
 ## Getting Started
 ### General Dependencies
-* Node.js & npm [link](https://nodejs.org/en/download/)
+* Node.js & npm ([link](https://nodejs.org/en/download/))
 * Grunt.js (after installing Node & npm, run `npm install -g grunt-cli`. [More info](https://gruntjs.com/getting-started))
 * ImageMagick (required, in order to use responsive images. [Download instructions](https://www.imagemagick.org/script/download.php))
 
 ### npm
-After verifying the submodule, just 2 quick steps to get up & running. Run
+2 steps to get up & running. Run:
 
 ```shell
 npm install
