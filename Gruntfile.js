@@ -143,7 +143,7 @@ module.exports = function(grunt) {
             }
         },
 
-        // allow development using ES2015 / ES6
+        // allow development using ES6
         babel: {
             // all js development done within dev/es2015 directory to use new features,
             // then compiled to dev/js for actual use in the browseer
@@ -162,6 +162,7 @@ module.exports = function(grunt) {
             }
         },
 
+        // clean various directories
         clean: {
             // to avoid confusion when developing, deletes the concatenated es2015 file
             // & resume.js (from resume-data), after they are used by babel
@@ -175,6 +176,7 @@ module.exports = function(grunt) {
             remaining: ['dist','dev/css','dev/js','.sass-cache']
         },
 
+        // minify js files for production
         uglify: {
             options: {
                 mangle: {
@@ -191,6 +193,9 @@ module.exports = function(grunt) {
             }
         },
 
+        // check the js output of babel
+        // in the future, may make sense to check code *before* babel, which would entail using eslint
+        // instead of jshint
         jshint: {
             options: {
                 globals: {
@@ -207,6 +212,7 @@ module.exports = function(grunt) {
             dev: ['dev/js/resumeScripts.js']
         },
 
+        // replaces links to dev js & css files, with links to single, minified files for production
         processhtml: {
             options: {
             },
@@ -218,6 +224,7 @@ module.exports = function(grunt) {
             }
         },
 
+        // simple http server that, paired with watch, is setup for livereload
         connect: {
             options: {
                 hostname: 'localhost',
@@ -240,6 +247,7 @@ module.exports = function(grunt) {
             }
         },
 
+        // tasks for modifying es6 & scss files, as well as livereloading dev server on changes
         watch: {
             options: {
                 livereload: false
@@ -274,11 +282,16 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-processhtml');
 
+    // run all responsive image & compiling tasks, for both dev & production, without running servers
     grunt.registerTask('default', ['copy:dev','copy:beforeResponsive','responsive_images','copy:afterResponsive','copy:dist','sass','postcss','concat','babel','clean:dev','uglify','jshint','processhtml']);
+    
+    // run all responsive image & compiling tasks for dev, then run a livereloading server
     grunt.registerTask('serveDev', ['copy:dev','copy:beforeResponsive','responsive_images','copy:afterResponsive','sass:dev','postcss:dev','concat','babel','clean:dev','jshint','connect:dev','watch']);
+    
+    // run all responsive image & compiling tasks for prod, then run a perpetuating server (not livereload, but remains active after Grunt completes)
     grunt.registerTask('serveProd', ['copy:dev','copy:beforeResponsive','responsive_images','copy:afterResponsive','copy:dist','sass:prod','postcss:prod','concat','babel','clean:dev','uglify','processhtml','connect:prod']);
 
-    // could be periodically run to clean out responsive_images directories,
+    // can be periodically run to clean out responsive_images directories,
     // which are not flushed on each run of the responsive_images task
     grunt.registerTask('cleanImages', ['clean:images']);
 
