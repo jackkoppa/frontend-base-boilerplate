@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 
                 files: [{
                     expand: true,
-                    cwd: 'img',
+                    cwd: 'dev/img',
                     src: ['**/*.jpg'],
                     dest: 'dev/img_responsive'
                 }]
@@ -140,7 +140,7 @@ module.exports = function(grunt) {
             // then compiled to dev/js for actual use in the browseer
             options: {
                 sourceMap: true,
-                presets: ['es6']
+                presets: ['es2015']
             },
             dev: {
                 files: [{

@@ -26,7 +26,16 @@ $font-sizes: (
 );
 
 // Colors
-
+$primary: #205686;
+$secondary: #2a7e72;
+$tertiary: #74625c;
+$white: #fff;
+$light-grey: #eee;
+$mid-grey: #777;
+$dark-grey: #444;
+$black: #000;
+$white-transparent: rgba(255,255,255,0.2);
+$white-semi-transparent: rgba(255,255,255,0.7);
 
 // Styling
 $fast-transition: 0.1s all linear;
