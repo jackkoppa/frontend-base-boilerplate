@@ -1,4 +1,9 @@
 module.exports = function(grunt) {
+    // list of ES files that should be compiled by Babel
+    var es6Files = [
+        'dev/es6/config.js',
+        'dev/es6/primary.js'
+    ];
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -42,30 +47,17 @@ module.exports = function(grunt) {
         copy: {
             dev: {
                 files: [
-                    // pull resume.js from resume-data submodule, so its data can be used
-                    {expand: true, cwd: 'resume-data', src: 'resume.js', dest: 'dev/es2015'},
+                    // copy over external scripts to avoid using Babel on them
+                    {expand: true, cwd: 'dev/es6/external', src: '*.js', dest: 'dev/js/external'},
 
-                    // copy over external scripts to avoid using Babel on them (jQuery & jquery.modal)
-                    {expand: true, cwd: 'dev/es2015/external', src: '*.js', dest: 'dev/js/external'}
-                ]
-            },
-            beforeResponsive: {
-                files: [
-                    // images from resume-data repo
-                    {expand: true, cwd: 'resume-data/img', src: ['**/*','!**/*.db'], dest: 'img'}
-                ]
-            },
-            afterResponsive: {
-                files: [
                     // copy any images "missed" (purposefully) by responsive_images task,
                     // into dev/responsive_images directory
-                    {expand: true, cwd: 'project_img', src: ['**/*','!**/*.db'], dest: 'dev/responsive_images'},
-                    {expand: true, cwd: 'img', src: ['**/*.{png,gif,svg}'], dest: 'dev/responsive_images'}
+                    {expand: true, cwd: 'dev/img', src: ['**/*.{png,gif,svg}'], dest: 'dev/responsive_images'}
                 ]
             },
             dist: {
                 files: [
-                    // to make sure jQuery is included in production, even though it's not compiled
+                    // to make sure external js files are included in production, even though it's not compiled
                     {expand: true, cwd: 'dev/js/external', src: '*.js', dest: 'dist/js'},
 
                     // copy entire dev/responsive_images directory
@@ -86,19 +78,17 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'dev/scss',
-                    src: ['*.scss','external/jquery_modal.scss'],
+                    src: ['*.scss','external/*.scss'],
                     dest: 'dev/css',
                     ext: '.css'
                 }]
             },
-
             prod: {
                 options: {
                     style: 'compressed'
                 },
                 files: {
-                    'dist/css/style.min.css': 'dev/scss/styleDist.scss',
-                    'dist/css/jquery_modal.min.css': 'dev/scss/external/jquery_modal.scss'
+                    'dist/css/style.min.css': 'dev/scss/compiledStyle.scss',
                 }
             }
         },
@@ -135,26 +125,27 @@ module.exports = function(grunt) {
             options: {
                 separator: '\n'
             },
+
             // in development, this is just for easy linting. Task is also used in production build,
             // to create final minified .js file
             dev: {
-                src: ['dev/es2015/config.js', 'dev/es2015/resume.js', 'dev/es2015/templates.js', 'dev/es2015/helper.js', 'dev/es2015/resumeBuilder.js'],
-                dest: 'dev/es2015/resumeScripts.js'
+                src: es6Files,
+                dest: 'dev/es6/compiledScripts.js'
             }
         },
 
         // allow development using ES6
-        babel: {
-            // all js development done within dev/es2015 directory to use new features,
+        babel: {            
+            // all js development done within dev/es6 directory to use new features,
             // then compiled to dev/js for actual use in the browseer
             options: {
                 sourceMap: true,
-                presets: ['es2015']
+                presets: ['es6']
             },
             dev: {
                 files: [{
                     expand: true,
-                    cwd: 'dev/es2015',
+                    cwd: 'dev/es6',
                     src: ['*.js'],
                     dest: 'dev/js',
                     ext: '.js'
@@ -164,9 +155,9 @@ module.exports = function(grunt) {
 
         // clean various directories
         clean: {
-            // to avoid confusion when developing, deletes the concatenated es2015 file
+            // to avoid confusion when developing, deletes the concatenated es6 file
             // & resume.js (from resume-data), after they are used by babel
-            dev: ['dev/es2015/resumeScripts.js','dev/es2015/resume.js'],
+            dev: ['dev/es6/compiledScripts.js'],
 
             // could be periodically run to clean out responsive_images directories,
             // which are not flushed on each run of the responsive_images task
@@ -188,7 +179,7 @@ module.exports = function(grunt) {
             },
             prod: {
                 files: {
-                    'dist/js/resumeScripts.min.js': ['dev/js/resumeScripts.js']
+                    'dist/js/scripts.min.js': ['dev/js/compiledScripts.js']
                 }
             }
         },
@@ -207,16 +198,16 @@ module.exports = function(grunt) {
                 sub: true,
                 strict: "global"
             },
+
             // for ease of comparing declared variables, only lints the concatenated file,
             // even though the development index.html is drawing from its source files for easy Chrome debugging
-            dev: ['dev/js/resumeScripts.js']
+            dev: ['dev/js/compiledScripts.js']
         },
 
         // replaces links to dev js & css files, with links to single, minified files for production
         processhtml: {
             options: {
             },
-
             prod: {
                 files: {
                     'dist/index.html': ['dev/index.html']
@@ -259,7 +250,7 @@ module.exports = function(grunt) {
                 }
             },
             devJS: {
-                files: 'dev/es2015/*.js',
+                files: 'dev/es6/*.js',
                 tasks: ['copy:dev','concat','babel','clean:dev','jshint']
             },
             devSCSS: {
