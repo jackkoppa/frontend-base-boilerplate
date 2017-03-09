@@ -38,7 +38,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'img',
                     src: ['**/*.jpg'],
-                    dest: 'dev/responsive_images'
+                    dest: 'dev/img_responsive'
                 }]
             }
         },
@@ -51,17 +51,17 @@ module.exports = function(grunt) {
                     {expand: true, cwd: 'dev/es6/external', src: '*.js', dest: 'dev/js/external'},
 
                     // copy any images "missed" (purposefully) by responsive_images task,
-                    // into dev/responsive_images directory
-                    {expand: true, cwd: 'dev/img', src: ['**/*.{png,gif,svg}'], dest: 'dev/responsive_images'}
+                    // into dev/img_responsive directory
+                    {expand: true, cwd: 'dev/img', src: ['**/*.{png,gif,svg}'], dest: 'dev/img_responsive'}
                 ]
             },
-            dist: {
+            prod: {
                 files: [
                     // to make sure external js files are included in production, even though it's not compiled
                     {expand: true, cwd: 'dev/js/external', src: '*.js', dest: 'dist/js'},
 
-                    // copy entire dev/responsive_images directory
-                    {expand: true, cwd: 'dev/responsive_images', src: ['**/*','!**/*.db'], dest: 'dist/responsive_images'},
+                    // copy entire dev/img_responsive directory
+                    {expand: true, cwd: 'dev/img_responsive', src: ['**/*','!**/*.db'], dest: 'dist/img_responsive'},
 
                     // copy entire fonts directory
                     {expand: true, cwd: 'dev/font', src: '**/*', dest: 'dist/font'}
@@ -159,9 +159,9 @@ module.exports = function(grunt) {
             // & resume.js (from resume-data), after they are used by babel
             dev: ['dev/es6/compiledScripts.js'],
 
-            // could be periodically run to clean out responsive_images directories,
+            // could be periodically run to clean out img_responsive directories,
             // which are not flushed on each run of the responsive_images task
-            images: ['img','dev/responsive_images','dist/responsive_images'],
+            images: ['img','dev/img_responsive','dist/img_responsive'],
 
             // remove remaining "compiled" files, not covered above
             remaining: ['dist','dev/css','dev/js','.sass-cache']
@@ -274,15 +274,15 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-processhtml');
 
     // run all responsive image & compiling tasks, for both dev & production, without running servers
-    grunt.registerTask('default', ['copy:dev','copy:beforeResponsive','responsive_images','copy:afterResponsive','copy:dist','sass','postcss','concat','babel','clean:dev','uglify','jshint','processhtml']);
+    grunt.registerTask('default', ['copy:dev','responsive_images','copy:prod','sass','postcss','concat','babel','clean:dev','uglify','jshint','processhtml']);
     
     // run all responsive image & compiling tasks for dev, then run a livereloading server
-    grunt.registerTask('serveDev', ['copy:dev','copy:beforeResponsive','responsive_images','copy:afterResponsive','sass:dev','postcss:dev','concat','babel','clean:dev','jshint','connect:dev','watch']);
+    grunt.registerTask('serveDev', ['copy:dev','responsive_images','sass:dev','postcss:dev','concat','babel','clean:dev','jshint','connect:dev','watch']);
     
     // run all responsive image & compiling tasks for prod, then run a perpetuating server (not livereload, but remains active after Grunt completes)
-    grunt.registerTask('serveProd', ['copy:dev','copy:beforeResponsive','responsive_images','copy:afterResponsive','copy:dist','sass:prod','postcss:prod','concat','babel','clean:dev','uglify','processhtml','connect:prod']);
+    grunt.registerTask('serveProd', ['copy:dev','responsive_images','copy:prod','sass:prod','postcss:prod','concat','babel','clean:dev','uglify','processhtml','connect:prod']);
 
-    // can be periodically run to clean out responsive_images directories,
+    // can be periodically run to clean out img_responsive directories,
     // which are not flushed on each run of the responsive_images task
     grunt.registerTask('cleanImages', ['clean:images']);
 
