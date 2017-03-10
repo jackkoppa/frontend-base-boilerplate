@@ -11,6 +11,9 @@ $mq-breakpoints: (
     xl: 1200px
 ) !default;
 
+// Max width for containers (to have full-width element, use .full-wrap instead of .container)
+$max-content-width: 1200px;
+
 // Typography
 $base-font-size: 16px !default;
 
