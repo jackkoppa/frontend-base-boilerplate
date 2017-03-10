@@ -115,57 +115,15 @@ img {
 }
 
 // xs, sm, md, lg, xl Box Sizing
-/* xs (base size) */
-.box-xs-0 { display: none; }
-@for $i from 1 through 12 {
-    .box-xs-#{$i} {
-        width: (100% / 12) * $i;
-    }
-}
-
-/* sm (mobile) */
-@include mq(sm) {
-    .box-sm-0 { display: none; }
-    @for $i from 1 through 12 {
-        .box-sm-#{$i} {
-            width: (100% / 12) * $i;
-        }
-    }
-}
-
-/* md (tablet) */
-@include mq(md) {
-    .box-md-0 { display: none; }
-    @for $i from 1 through 12 {
-        .box-md-#{$i} {
-            width: (100% / 12) * $i;
-        }
-    }
-}
-
-/* lg (laptop) */
-@include mq(lg) {
-    .box-lg-0 { display: none; }
-    @for $i from 1 through 12 {
-        .box-lg-#{$i} {
-            width: (100% / 12) * $i;
-        }
-    }
-}
-
-/* xl (desktop) */
-@include mq(xl) {
-    .box-xl-0 { display: none; }
-    @for $i from 1 through 12 {
-        .box-xl-#{$i} {
-            width: (100% / 12) * $i;
-        }
-    }
-}
-
-/* display & hide only at certain widths */
+/* box sizing, with media queries */
 @each $breakpoint, $px in $mq-breakpoints {
-    @include mq($breakpoint) {
+    @if $px == null {
+        @for $i from 1 through 12 {
+            .box-#{$breakpoint}-#{$i} {
+                width: (100% / 12) * $i;
+            }
+        }
+        /* display & hide only at certain widths */
         .hide-#{$breakpoint} {
             display: none;
             visibility: none;
@@ -180,5 +138,28 @@ img {
             overflow: initial;
             visibility: visible;    
         }
+    } @else  {
+        @include mq($breakpoint) {
+            @for $i from 1 through 12 {
+                .box-#{$breakpoint}-#{$i} {
+                    width: (100% / 12) * $i;
+                }
+            }
+            /* display & hide only at certain widths */
+            .hide-#{$breakpoint} {
+                display: none;
+                visibility: none;
+                max-height: 0;
+                max-width: 0;
+                overflow: hidden;
+            }
+            .show-#{$breakpoint} {
+                display: block;
+                max-width: none;
+                max-height: none;
+                overflow: initial;
+                visibility: visible;    
+            }
+        }        
     }
 }
