@@ -7,10 +7,10 @@ For use in my personal projects, as a simple way to get started (includes a very
 If `svn` is installed, can run the following from within the root folder of a brand new repository:
 
 ```shell
-svn export https://github.com/jackkoppa/frontend-boilerplate-2017/trunk . --force
+svn export https://github.com/jackkoppa/frontend-base-boilerplate/trunk . --force
 ```
 
-This will overwrite the current readme, license, and .gitignore for the new repo. So if the new project has already been started, best to just download a zip of this boilerplate from [https://github.com/jackkoppa/frontend-boilerplate-2017](https://github.com/jackkoppa/frontend-boilerplate-2017), and extract it into your new project.
+This will overwrite the current readme, license, and .gitignore for the new repo. So if the new project has already been started, best to just download a zip of this boilerplate from https://github.com/jackkoppa/frontend-base-boilerplate, and extract it into your new project.
 
 That's it - from there, get started on development, and delete everything above this line when updating the README:
 
@@ -20,34 +20,22 @@ ___
 ## Background
 PROJECT BACKGROUND
 
-## Getting Started
-### General Dependencies
+## Running Locally
+### Install
 * Node.js & npm ([link](https://nodejs.org/en/download/))
 * Grunt.js (after installing Node & npm, run `npm install -g grunt-cli`. [More info](https://gruntjs.com/getting-started))
 * ImageMagick (required, in order to use responsive images. [Download instructions](https://www.imagemagick.org/script/download.php))
 
-### npm
-2 steps to get up & running. Run:
-
+### Run
 ```shell
+git clone [PROJECT_URL]
 npm install
+cd [PROJECT_NAME]
+grunt serveDev
 ```
-
-to install the dev dependencies. After that, run one of the following Grunt tasks:
-
-* compile & lint files, for both development (`dev/`) & production (`dist/`) builds:
-    ```shell
-    grunt
-    ```
+Livereloading server now available at `localhost:8000`
 
 
-* compile, lint, & launch a livereloading server (`localhost:8000`) for the development build:
-    ```shell
-    grunt serveDev
-    ```
-
-
-* compile, lint, & launch a persistent server without livereload (`localhost:8080`) for the production build:
-    ```shell
-    grunt serveProd
-    ```
+Alternative grunt commands:
+* `grunt` - compile & lint files, for both development (`dev/`) & production (`dist/`) builds
+* `grunt serveProd` - compile, lint, & launch a persistent server for production build
