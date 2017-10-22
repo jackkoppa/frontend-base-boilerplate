@@ -29,11 +29,11 @@ PROJECT BACKGROUND
 ### Run
 ```shell
 git clone [PROJECT_URL]
-npm install
 cd [PROJECT_NAME]
+npm install
 grunt serveDev
 ```
-Livereloading server now available at `localhost:8000`
+Livereloading server now available at `http://localhost:8000`
 
 
 Alternative grunt commands:
